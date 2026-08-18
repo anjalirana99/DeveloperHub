@@ -1,0 +1,21 @@
+{
+  "name": "developerhub",
+  "version": "1.0.0",
+  "description": "Platform of Dev Community",
+  "keywords": [
+    "Nodejs",
+    "MongoDB"
+  ],
+  "license": "ISC",
+  "author": "Anjali Rana",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node src/app.js",
+    "dev":"nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
