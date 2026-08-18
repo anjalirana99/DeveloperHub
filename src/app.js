@@ -6,11 +6,18 @@ const app = express()
 app.use("/test",(req,res)=>{
     res.send("Hello From Node Server Testinggg!")
 })
-app.use("/hello",(req,res)=>{
-    res.send("Hello From Node Server Hellooooo!")
+
+app.use("/user",(req,res)=>{
+    res.send("Code Sequence Matter use will run for get post ")
 })
-app.use("/",(req,res)=>{   //putting home route at last bcz /test -> app.use("/")-> MATCHES!->res.send(...)
-    res.send("Hello From Node Server Home!")
+app.get("/user",(req,res)=>{
+    res.send({firstname:"Anjali",lastname:"Rana"})
+})
+app.post("/user",(req,res)=>{
+    res.send("Data Saved Succesfully!!!")
+})
+app.delete("/user",(req,res)=>{
+    res.send("Data Deleted Succesfully!!!")
 })
 
 app.listen(7777,()=>{
