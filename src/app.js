@@ -1,24 +1,50 @@
 const express = require("express")
 const app = express()
+const {adminAuth} = require("./middleware/auth")
+
+//Multiple routeHandler for one route 
+app.get("/user",(req,res,next)=>{
+    console.log("Hi from1")
+        res.send("User FOund1")
+            next();
 
 
-
-app.use("/test",(req,res)=>{
-    res.send("Hello From Node Server Testinggg!")
+})
+app.get("/user",(req,res,next)=>{
+    console.log("hi from2")
 })
 
-app.use("/user",(req,res)=>{
-    res.send("Code Sequence Matter use will run for get post ")
+//MiddleWare for Admin Authorization
+app.use("/admin",adminAuth)
+
+app.use("/admin/getData",(req,res,next)=>{
+    res.send("Data collected")
 })
-app.get("/user",(req,res)=>{
-    res.send({firstname:"Anjali",lastname:"Rana"})
+app.use("/admin/DeleteUser",(req,res,next)=>{
+    res.send("User is Deleted Succesfully!!!")
 })
-app.post("/user",(req,res)=>{
-    res.send("Data Saved Succesfully!!!")
+
+
+// Error Handling
+// 1- uding try catch block in handler 
+//2- using wildcard handler with err 
+
+app.get("/user/login",(req,res)=>{
+    try{
+        throw new Error()
+        res.send("Loggein Succesfully!!!")
+    }
+    catch(err){
+        res.status(500).send("Error in Login Service....")
+    }
 })
-app.delete("/user",(req,res)=>{
-    res.send("Data Deleted Succesfully!!!")
+
+app.use("/",(err,req,res,next)=>{
+    if(err){
+        res.status(500).send("Something Went Wrong")
+    }
 })
+
 
 app.listen(7777,()=>{
     console.log("Server Started Succesfully at Port 7777.....")
