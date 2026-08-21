@@ -3,16 +3,20 @@ const {connectCluster} = require("./config/database")
 const app = express()
 const {userModel} = require("./models/user")
 
-app.post("/signup", async(req,res)=>{
+app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 
+app.post("/signup", async(req,res)=>{
+    const userInfo = req.body
+    console.log(userInfo)
         try{
-            const user = new userModel({
-            firstName:"Pragyat",
-            lastName:"Rana",
-            email:"abc@gmail.com",
-            password:"123",
-            age:29
-        })
+        //     const user = new userModel({
+        //     firstName:"Pragyat",
+        //     lastName:"Rana",
+        //     email:"abc@gmail.com",
+        //     password:"123",
+        //     age:29
+        // })
+        const user = new userModel(userInfo)
         await user.save()
         res.send("User Stored")
         }
