@@ -48,23 +48,6 @@ app.get("/user",async (req,res)=>{
     
 })
 
-// Feed API - GEt /feed - get All User from DataBase
-
-app.get("/feed",async(req,res)=>{
-    try{
-        const users = await userModel.find({})
-        if(users.length !==0){
-            res.send(users)
-        }
-        else{
-            res.status(404).send("No Users Found!!")
-        }
-    }
-    catch(err){
-        res.status(500).send("Something Went Wrong")
-    }
-})
-
 // get user by ID 
 app.get("/user/:id",async(req,res)=>{
     try{
@@ -86,6 +69,25 @@ app.get("/user/:id",async(req,res)=>{
 
 })
 
+// Feed API - GEt /feed - get All User from DataBase
+
+app.get("/feed",async(req,res)=>{
+    try{
+        const users = await userModel.find({})
+        if(users.length !==0){
+            res.send(users)
+        }
+        else{
+            res.status(404).send("No Users Found!!")
+        }
+    }
+    catch(err){
+        res.status(500).send("Something Went Wrong")
+    }
+})
+
+
+
 //delete by id api - DELETE / user -  Delete User From DB 
 
 app.delete("/user/:id",async(req,res)=>{
@@ -96,11 +98,33 @@ app.delete("/user/:id",async(req,res)=>{
              res.send("Deleted User"+user)
         }
         else{
-            res.status(404).send("No Users Found!!")
+            res.status(404).send("User Not Found!!")
         }
 
     }
 
+    catch(err){
+        res.status(500).send("Something Went Wrong")
+    }
+})
+
+
+// Update API - update User info by id 
+
+app.patch("/user/:id",async(req,res)=>{
+    // console.log(req.params.id)
+    // console.log()
+    try{
+        const userId = req.params.id
+        const updatedData = req.body
+        const user = await userModel.findByIdAndUpdate(userId,updatedData)
+        if(user){
+            res.send("Data Updated for the user " + user.firstName)
+        }
+        else{
+            res.status(404).send("User Not Found!!")
+        }
+    }
     catch(err){
         res.status(500).send("Something Went Wrong")
     }
