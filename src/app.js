@@ -30,7 +30,7 @@ app.post("/signup", async(req,res)=>{
 
 //get one user by email
 app.get("/user",async (req,res)=>{
-
+    console.log("hello")
     try{
         const userEmail = req.query.email
         const user = await userModel.find({email:userEmail})
@@ -64,6 +64,28 @@ app.get("/feed",async(req,res)=>{
     catch(err){
         res.status(500).send("Something Went Wrong")
     }
+})
+
+// get user by ID 
+app.get("/user/:id",async(req,res)=>{
+    console.log("hi")
+    try{
+        const userId  = req.params.id
+        const user = await userModel.findById(userId)
+        if(user){
+             res.send(user)
+        }
+        else{
+            res.status(404).send("No Users Found!!")
+        }
+
+    }
+
+    catch(err){
+        res.status(500).send("Something Went Wrong")
+    }
+    
+
 })
 
 
