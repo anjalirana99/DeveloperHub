@@ -2,6 +2,7 @@ const express = require("express")
 const {connectCluster} = require("./config/database")
 const app = express()
 const {userModel} = require("./models/user")
+const {validateSignUp} = require("./utils/validate")
 
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 
@@ -17,6 +18,7 @@ app.post("/signup", async(req,res)=>{
         //     password:"123",
         //     age:29
         // })
+        validateSignUp(userInfo)  // API level Data Sanitization
         const user = new userModel(userInfo)
         await user.save()
         res.send("User Stored")
@@ -114,6 +116,11 @@ app.patch("/user/:id",async(req,res)=>{
     // console.log(req.params.id)
     // console.log()
     try{
+        const isAllowed = ["password","age","about","skills"]
+        const isUpdateAllowed = Object.keys(req.body).every((key)=>isAllowed.includes(key))
+        console.log(isUpdateAllowed)
+        if(!isUpdateAllowed)throw new Error("Update not Allowed!")
+
         const userId = req.params.id
         const updatedData = req.body
         const user = await userModel.findByIdAndUpdate(userId,updatedData,{runValidators:true})
