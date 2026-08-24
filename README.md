@@ -12,3 +12,9 @@ install nodemon to refresh server when saving any change
 
 install mongoose
 make DB connection 
+
+
+create Schema , collections 
+create APIs 
+validation using validator 
+password encryption using bcrypt 
