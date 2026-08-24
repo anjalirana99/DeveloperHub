@@ -9,7 +9,6 @@ app.use(express.json()) //middle ware to convert the json to JS object in incomi
 // store user data dynamically 
 app.post("/signup", async(req,res)=>{
     const userInfo = req.body
-    console.log(userInfo)
         try{
         //     const user = new userModel({
         //     firstName:"Pragyat",
@@ -23,7 +22,7 @@ app.post("/signup", async(req,res)=>{
         res.send("User Stored")
         }
         catch(err){
-            res.status(500).send("Something Went Wrong")
+            res.status(500).send("Something Went Wrong: " + err.message)
         }
         
 })
@@ -117,7 +116,7 @@ app.patch("/user/:id",async(req,res)=>{
     try{
         const userId = req.params.id
         const updatedData = req.body
-        const user = await userModel.findByIdAndUpdate(userId,updatedData)
+        const user = await userModel.findByIdAndUpdate(userId,updatedData,{runValidators:true})
         if(user){
             res.send("Data Updated for the user " + user.firstName)
         }
@@ -126,7 +125,7 @@ app.patch("/user/:id",async(req,res)=>{
         }
     }
     catch(err){
-        res.status(500).send("Something Went Wrong")
+        res.status(500).send("Something Went Wrong: " + err.message)
     }
 })
 
