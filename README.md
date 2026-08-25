@@ -18,3 +18,8 @@ create Schema , collections
 create APIs 
 validation using validator 
 password encryption using bcrypt 
+
+
+## Authentication in subsequent requests from client - using JWT token and cookies 
+
+install - cookie-parser to read cookies at server

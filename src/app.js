@@ -4,9 +4,10 @@ const app = express()
 const {userModel} = require("./models/user")
 const {validateSignUp} = require("./utils/validate")
 const bcrypt = require('bcrypt');
+const cookieParser = require("cookie-parser")
 
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
-
+app.use(cookieParser()) //to read incoming cookies in request 
 
 // store user data dynamically 
 app.post("/signup", async(req,res)=>{
@@ -44,6 +45,7 @@ app.post("/login",async(req,res)=>{
         if(!isPasswordValid){
             throw new Error("Invalid Creds " )
         }
+        res.cookie("accessToken","dsgfkdsahfidsahliHEIFHUDSKHCEKUHFU")
         res.send("User Login Successfully")
     }
     catch(err){
@@ -94,6 +96,13 @@ app.get("/user/:id",async(req,res)=>{
 
 })
 
+//get profile API 
+
+app.get("/profile",async(req,res)=>{
+    console.log(req.cookies)
+    res.send("Reading cookies ")
+})
+
 // Feed API - GEt /feed - get All User from DataBase
 
 app.get("/feed",async(req,res)=>{
@@ -137,8 +146,7 @@ app.delete("/user/:id",async(req,res)=>{
 // Update API - update User info by id 
 
 app.patch("/user/:id",async(req,res)=>{
-    // console.log(req.params.id)
-    // console.log()
+   
     try{
         const isAllowed = ["password","age","about","skills"]
         const isUpdateAllowed = Object.keys(req.body).every((key)=>isAllowed.includes(key))
