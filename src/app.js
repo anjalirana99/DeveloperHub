@@ -1,7 +1,7 @@
 const express = require("express")
 const {connectCluster} = require("./config/database")
 const app = express()
-const {userModel} = require("./models/user")
+const {UserModel} = require("./models/user")
 const {validateSignUp} = require("./utils/validate")
 const bcrypt = require('bcrypt');
 const cookieParser = require("cookie-parser")
@@ -15,7 +15,7 @@ app.use(cookieParser()) //to read incoming cookies in request
 app.post("/signup", async(req,res)=>{
     const userInfo = req.body
         try{
-        //     const user = new userModel({
+        //     const user = new UserModel({
         //     firstName:"Pragyat",
         //     lastName:"Rana",
         //     email:"abc@gmail.com",
@@ -25,7 +25,7 @@ app.post("/signup", async(req,res)=>{
         validateSignUp(userInfo)  // API level Data Sanitization and validation 
         const hashPassword = await bcrypt.hash(req.body?.password,10)  // password Encryption 
         userInfo.password = hashPassword
-        const user = new userModel(userInfo)
+        const user = new UserModel(userInfo)
         await user.save()
         res.send("User Stored")
         }
@@ -39,15 +39,15 @@ app.post("/signup", async(req,res)=>{
 app.post("/login",async(req,res)=>{
     try{ 
         const {email,password} = req.body
-        const user = await userModel.findOne({email : email})
+        const user = await UserModel.findOne({email : email})
 
         if(!user)throw new Error("Invalid Creds")
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await user.validatePassword(password);
 
         if(!isPasswordValid){
             throw new Error("Invalid Creds 222" )
         }
-        const jwtToken = jwt.sign({_id: user._id},"SECRETKEY",{expiresIn:"1d"})
+        const jwtToken = user.getJWT()
         res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+10000)}) // cookie expires in 10sec
         res.send("User Login Successfully")
     }
@@ -62,7 +62,7 @@ app.post("/login",async(req,res)=>{
 app.get("/user",async (req,res)=>{
     try{
         const userEmail = req.query.email
-        const user = await userModel.find({email:userEmail})
+        const user = await UserModel.find({email:userEmail})
 
         if(user.length !== 0){
             res.send("User Found" + user)
@@ -82,7 +82,7 @@ app.get("/user",async (req,res)=>{
 app.get("/user/:id",async(req,res)=>{
     try{
         const userId  = req.params.id
-        const user = await userModel.findById(userId)
+        const user = await UserModel.findById(userId)
         if(user){
              res.send(user)
         }
@@ -114,7 +114,7 @@ app.get("/profile",userAuth,async(req,res)=>{
 
 app.get("/feed",async(req,res)=>{
     try{
-        const users = await userModel.find({})
+        const users = await UserModel.find({})
         if(users.length !==0){
             res.send(users)
         }
@@ -141,7 +141,7 @@ app.post("/sendRequest",userAuth,(req,res)=>{
 app.delete("/user/:id",async(req,res)=>{
     try{
         const userId  = req.params.id
-        const user = await userModel.findByIdAndDelete(userId)
+        const user = await UserModel.findByIdAndDelete(userId)
         if(user){
              res.send("Deleted User"+user)
         }
@@ -168,7 +168,7 @@ app.patch("/user/:id",async(req,res)=>{
 
         const userId = req.params.id
         const updatedData = req.body
-        const user = await userModel.findByIdAndUpdate(userId,updatedData,{runValidators:true})
+        const user = await UserModel.findByIdAndUpdate(userId,updatedData,{runValidators:true})
         if(user){
             res.send("Data Updated for the user " + user.firstName)
         }

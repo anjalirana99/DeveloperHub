@@ -1,4 +1,4 @@
-const {userModel} = require("../models/user")
+const {UserModel} = require("../models/user")
 const jwt = require("jsonwebtoken")
 
 
@@ -21,10 +21,10 @@ const userAuth = async(req,res,next)=>{
         if(!accessToken) throw new Error("Token is not Present!!!") 
         const decodedData = await jwt.verify(accessToken,"SECRETKEY")
         const{_id} = decodedData
-        const user = await userModel.findById(_id)
+        const user = await UserModel.findById(_id)
         if(!user) throw new Error("User Not Exist....")
         else{
-            req.user = user 
+            req.user = user
             next()
         }
     }catch(err){

@@ -32,3 +32,6 @@ read jwt token decode it and find the loggedin user profile via /profile api
 userAuth middleware in all apis except login and signup --
 ex- profile and sendrequest api 
 expiry set in JWT token and cookies
+
+
+user schema methods instead of validating password and creating jwt token at login api gateway attach the function to user schema so that u can just simply call these methods of user instance when login 
