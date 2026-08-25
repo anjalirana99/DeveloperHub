@@ -1,9 +1,10 @@
 const validate = require("validator")
+const { UserModel } = require("../models/user")
 
 const validateSignUp = (userInfo)=>{
     const  {firstName, lastName, email,password} = userInfo
-    if(!firstName){
-        throw new Error("First Name should not be Empty!!!1")
+    if(!firstName || !lastName){
+        throw new Error("Name should not be Empty!!!1")
     } 
     else if(!validate.isEmail(email)){
         throw new Error("Email Not Valid")
@@ -13,4 +14,24 @@ const validateSignUp = (userInfo)=>{
     }
 }
 
-module.exports = {validateSignUp}
+const validateLogin = async(req)=>{
+    const {email,password} = req.body
+        const user = await UserModel.findOne({email : email})
+        if(!user) return null
+
+        const isPasswordValid = await user.validatePassword(password);
+        if(!isPasswordValid){
+            return null
+        }
+        else{
+            return user
+        }
+}
+
+const validateProfileUpdate = (req)=>{
+    const allowedEditFields = ["firstName","lastName","age","about","skills"]
+    const isUpdateAllowed = Object.keys(req.body).every((key)=>allowedEditFields.includes(key))
+    return isUpdateAllowed
+}
+
+module.exports = {validateSignUp, validateLogin, validateProfileUpdate}
