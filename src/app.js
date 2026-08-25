@@ -6,6 +6,7 @@ const {validateSignUp} = require("./utils/validate")
 const bcrypt = require('bcrypt');
 const cookieParser = require("cookie-parser")
 const jwt = require("jsonwebtoken")
+const {userAuth} = require("./middleware/auth")
 
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 app.use(cookieParser()) //to read incoming cookies in request 
@@ -44,10 +45,10 @@ app.post("/login",async(req,res)=>{
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if(!isPasswordValid){
-            throw new Error("Invalid Creds " )
+            throw new Error("Invalid Creds 222" )
         }
-        const jwtToken = jwt.sign({_id: user._id},"SECRETKEY")
-        res.cookie("accessToken",jwtToken)
+        const jwtToken = jwt.sign({_id: user._id},"SECRETKEY",{expiresIn:"1d"})
+        res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+10000)}) // cookie expires in 10sec
         res.send("User Login Successfully")
     }
     catch(err){
@@ -100,14 +101,9 @@ app.get("/user/:id",async(req,res)=>{
 
 //get profile API 
 
-app.get("/profile",async(req,res)=>{
+app.get("/profile",userAuth,async(req,res)=>{
     try{
-        const cookies = req.cookies
-        const {accessToken} = req.cookies
-        if(!accessToken) throw new Error("Token is not Present!!!") 
-        const decodedData = await jwt.verify(accessToken,"SECRETKEY")
-        const{_id} = decodedData
-        const user = await userModel.findById(_id)
+        const user = req.user
         res.send(user)
     }catch(err){
         res.status(500).send("Something Went Wrong: " + err.message)
@@ -129,6 +125,13 @@ app.get("/feed",async(req,res)=>{
     catch(err){
         res.status(500).send("Something Went Wrong")
     }
+})
+
+// post - send connection reqest api 
+
+app.post("/sendRequest",userAuth,(req,res)=>{
+    const user = req.user
+    res.send(user.firstName + " sent the connect request!");
 })
 
 

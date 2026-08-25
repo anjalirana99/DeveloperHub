@@ -22,7 +22,13 @@ password encryption using bcrypt
 
 ## Authentication in subsequent requests from client - using JWT token and cookies 
 
-install - cookie-parser to read cookies at server
+install - cookie-parser library to read cookies at server
 
-create JWT token send payload inside it 
+install jsonwebtoken library 
+create JWT token send payload inside it  
 read jwt token decode it and find the loggedin user profile via /profile api  
+
+
+userAuth middleware in all apis except login and signup --
+ex- profile and sendrequest api 
+expiry set in JWT token and cookies
