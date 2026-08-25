@@ -5,6 +5,7 @@ const {userModel} = require("./models/user")
 const {validateSignUp} = require("./utils/validate")
 const bcrypt = require('bcrypt');
 const cookieParser = require("cookie-parser")
+const jwt = require("jsonwebtoken")
 
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 app.use(cookieParser()) //to read incoming cookies in request 
@@ -45,7 +46,8 @@ app.post("/login",async(req,res)=>{
         if(!isPasswordValid){
             throw new Error("Invalid Creds " )
         }
-        res.cookie("accessToken","dsgfkdsahfidsahliHEIFHUDSKHCEKUHFU")
+        const jwtToken = jwt.sign({_id: user._id},"SECRETKEY")
+        res.cookie("accessToken",jwtToken)
         res.send("User Login Successfully")
     }
     catch(err){
@@ -99,8 +101,17 @@ app.get("/user/:id",async(req,res)=>{
 //get profile API 
 
 app.get("/profile",async(req,res)=>{
-    console.log(req.cookies)
-    res.send("Reading cookies ")
+    try{
+        const cookies = req.cookies
+        const {accessToken} = req.cookies
+        if(!accessToken) throw new Error("Token is not Present!!!") 
+        const decodedData = await jwt.verify(accessToken,"SECRETKEY")
+        const{_id} = decodedData
+        const user = await userModel.findById(_id)
+        res.send(user)
+    }catch(err){
+        res.status(500).send("Something Went Wrong: " + err.message)
+    }
 })
 
 // Feed API - GEt /feed - get All User from DataBase

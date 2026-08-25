@@ -23,3 +23,6 @@ password encryption using bcrypt
 ## Authentication in subsequent requests from client - using JWT token and cookies 
 
 install - cookie-parser to read cookies at server
+
+create JWT token send payload inside it 
+read jwt token decode it and find the loggedin user profile via /profile api  
