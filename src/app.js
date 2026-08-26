@@ -12,7 +12,7 @@ app.use(cookieParser()) //to read incoming cookies in request
 
 app.use("/",authRouter) // will route all paths to authRouter if match there return from res else will go below route handleres
 app.use("/profile",profileRouter)  // will route all/profile path to profileRouter
-app.use("/",requestRouter)
+app.use("/request",requestRouter)
 
 
 connectCluster()

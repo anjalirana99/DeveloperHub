@@ -15,7 +15,7 @@ profileRouter.get("/view",userAuth,(req,res)=>{
     }
 })
 
-profileRouter.post('/edit',userAuth,async(req,res)=>{
+profileRouter.patch('/edit',userAuth,async(req,res)=>{
 
     try{
         if(!validateProfileUpdate(req)){
@@ -35,7 +35,7 @@ profileRouter.post('/edit',userAuth,async(req,res)=>{
     
 })
 
-profileRouter.post("/password",userAuth,async (req,res)=>{
+profileRouter.patch("/password",userAuth,async (req,res)=>{
     try{
         const user  = req.user
         const newPassword = req.body?.password

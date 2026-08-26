@@ -8,8 +8,8 @@ POST/logout
 
 ## profileRouter
 GET/profile/view
-POST/profile/edit
-POST/profile/password
+PATCH/profile/edit
+PATCH/profile/password
 
 
 ## connectionRequest
