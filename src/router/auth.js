@@ -28,7 +28,7 @@ authRouter.post("/login",async(req,res)=>{
         if(!user) throw new Error("Invalid Creds...." )
 
         const jwtToken = user?.getJWT()
-        res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+100 *1000)}) // cookie expires in 100sec
+        res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+40*60 *1000)}) // cookie expires in 40min
         res.send("User Login Successfully")
     }
     catch(err){

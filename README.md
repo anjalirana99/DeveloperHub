@@ -35,3 +35,18 @@ expiry set in JWT token and cookies
 
 
 user schema methods instead of validating password and creating jwt token at login api gateway attach the function to user schema so that u can just simply call these methods of user instance when login 
+
+
+## flow for DEVELOPER HUB APIS 
+Auhentication -> Validation and Sanitization at API level -> valdation at schema level -> response cycle 
+
+express routes- 
+auth route 
+profiel route to handle /profile request 
+
+validation using 
+mongoose schema pre 
+enum 
+logical query - $or 
+
+
