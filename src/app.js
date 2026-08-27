@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser")
 const { authRouter } = require("./router/auth")
 const { profileRouter } = require("./router/profile")
 const { requestRouter } = require("./router/requestRouter")
+const { userRouter } = require("./router/userRouter")
 
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 app.use(cookieParser()) //to read incoming cookies in request 
@@ -13,6 +14,7 @@ app.use(cookieParser()) //to read incoming cookies in request
 app.use("/",authRouter) // will route all paths to authRouter if match there return from res else will go below route handleres
 app.use("/profile",profileRouter)  // will route all/profile path to profileRouter
 app.use("/request",requestRouter)
+app.use("/user",userRouter)
 
 
 connectCluster()

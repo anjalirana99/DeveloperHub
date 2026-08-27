@@ -20,6 +20,6 @@ POST/request/review/rejected/:requestID
 
 
 ## userRouter
-GET/user/connection
+GET/user/connection   // accepted request canbe send from loggedinuser or received to loggedinUSer 
 GET/user/feed
-GET/user/request
+GET/user/requests/received // all pending requests
