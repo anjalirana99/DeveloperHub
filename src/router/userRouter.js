@@ -2,7 +2,10 @@ const { userAuth } = require("../middleware/auth")
 const { ConnectionRequestModel } = require("../models/connectionRequest")
 
 const express = require("express")
+const { UserModel } = require("../models/user")
 const userRouter = express.Router()
+
+const USER_SAFE_DATA = "firstName lastName age about skills"
 
 userRouter.get("/request/received",userAuth, async(req,res)=>{
 
@@ -50,6 +53,46 @@ userRouter.get("/connections",userAuth,async(req,res)=>{
         res.json({
             message : "All connections for " + req.user.firstName,
             data 
+        })
+    }
+    catch(err){
+        res.status(500).send("Something went wrong : " + err.message)
+    }
+})
+
+userRouter.get("/feed",userAuth,async(req,res)=>{
+    try{
+        const page = parseInt(req.query?.page)  || 1
+        let limit = parseInt(req.query?.limit)  || 10
+
+        limit = limit>100 ? 100 : limit
+
+
+        const loggedInUserID = req.user._id
+        const connections = await ConnectionRequestModel.find({
+            $or:[
+                {fromUserId : loggedInUserID},
+                {toUserId : loggedInUserID}
+            ]
+        }).select(["fromUserId" , "toUserId"])
+
+        const connectionsId = new Set();
+        connections.forEach((conn)=>{
+            connectionsId.add(conn.toUserId)
+            connectionsId.add(conn.fromUserId)
+        })
+
+        const skipcontacts = (page-1)*limit
+        const feed = await UserModel.find({
+            $and:[
+                {_id : {$nin : Array.from(connectionsId)}},
+                {_id: {$ne: loggedInUserID}}
+            ]
+        }).select(USER_SAFE_DATA).skip(skipcontacts).limit(limit)
+
+        res.send({
+            message : "Devs You may be interested in : ",
+            data : feed
         })
     }
     catch(err){
