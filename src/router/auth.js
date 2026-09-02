@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const {UserModel} = require("../models/user")
 const {validateSignUp, validateLogin} = require("../utils/validate")
 
+const USER_SAFE_DATA = "firstName lastName age about skills"
+
 
 
 authRouter.post("/signup", async(req,res)=>{
@@ -26,10 +28,19 @@ authRouter.post("/login",async(req,res)=>{
     try{ 
         const user = await validateLogin(req)
         if(!user) throw new Error("Invalid Creds...." )
+        
 
         const jwtToken = user?.getJWT()
         res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+40*60 *1000)}) // cookie expires in 40min
-        res.send("User Login Successfully")
+        
+        const safeUser = await UserModel
+                                .findById(user._id)
+                                .select(USER_SAFE_DATA);
+
+        res.json({
+            message : "User Login Successfully",
+            data : safeUser
+        })
     }
     catch(err){
             res.status(500).send("Something Went Wrong: " + err.message)

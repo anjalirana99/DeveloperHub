@@ -2,12 +2,17 @@ const express = require("express")
 const {connectCluster} = require("./config/database")
 const app = express()
 const cookieParser = require("cookie-parser")
+const cors = require("cors")
 
 const { authRouter } = require("./router/auth")
 const { profileRouter } = require("./router/profile")
 const { requestRouter } = require("./router/requestRouter")
 const { userRouter } = require("./router/userRouter")
 
+app.use(cors({
+    origin : "http://localhost:5173",   //allow request from this origin 
+    credentials: true                    //This server allows the browser to include and receive credentials (such as cookies) in cross-origin requests 
+}))
 app.use(express.json()) //middle ware to convert the json to JS object in incoming request for all routes
 app.use(cookieParser()) //to read incoming cookies in request 
 
