@@ -26,7 +26,7 @@ profileRouter.patch('/edit',userAuth,async(req,res)=>{
         await user.save()  // saving updated user
         res.json({
             message : `${user.firstName}, your Profile updated successfuly...`,
-            data : user
+            result : user
         })
     }
     catch(err){

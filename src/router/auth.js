@@ -39,7 +39,7 @@ authRouter.post("/login",async(req,res)=>{
 
         res.json({
             message : "User Login Successfully",
-            data : safeUser
+            result : safeUser
         })
     }
     catch(err){

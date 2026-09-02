@@ -22,7 +22,7 @@ userRouter.get("/request/received",userAuth, async(req,res)=>{
 
         res.json({
             message: "Connection Requests Found for "+ loggedInUser.firstName,
-            data : connectionRequest
+            result : connectionRequest
         })
     }
     catch(err){
@@ -92,7 +92,7 @@ userRouter.get("/feed",userAuth,async(req,res)=>{
 
         res.send({
             message : "Devs You may be interested in : ",
-            data : feed
+            result : feed
         })
     }
     catch(err){
