@@ -2,9 +2,9 @@ const express = require("express")
 const authRouter = express.Router()
 const bcrypt = require('bcrypt');
 const {UserModel} = require("../models/user")
-const {validateSignUp, validateLogin} = require("../utils/validate")
+const {validateSignUp, validateLogin} = require("../utils/validate");
+const { USER_SAFE_DATA } = require("../utils/constants");
 
-const USER_SAFE_DATA = "firstName lastName age about skills"
 
 
 

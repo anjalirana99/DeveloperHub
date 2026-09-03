@@ -29,7 +29,7 @@ const validateLogin = async(req)=>{
 }
 
 const validateProfileUpdate = (req)=>{
-    const allowedEditFields = ["firstName","lastName","age","about","skills"]
+    const allowedEditFields = ["firstName","lastName","photoUrl", "age","about","skills", "gender"]
     const isUpdateAllowed = Object.keys(req.body).every((key)=>allowedEditFields.includes(key))
     return isUpdateAllowed
 }

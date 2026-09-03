@@ -3,9 +3,8 @@ const { ConnectionRequestModel } = require("../models/connectionRequest")
 
 const express = require("express")
 const { UserModel } = require("../models/user")
+const { USER_SAFE_DATA } = require("../utils/constants")
 const userRouter = express.Router()
-
-const USER_SAFE_DATA = "firstName lastName age about skills"
 
 userRouter.get("/request/received",userAuth, async(req,res)=>{
 

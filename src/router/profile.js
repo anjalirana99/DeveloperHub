@@ -4,11 +4,16 @@ const profileRouter = express.Router()
 const validate = require("validator")
 const bcrypt = require("bcrypt")
 const { validateProfileUpdate } = require("../utils/validate")
+const { USER_SAFE_DATA } = require("../utils/constants")
+const { UserModel } = require("../models/user")
 
-profileRouter.get("/view",userAuth,(req,res)=>{
+profileRouter.get("/view",userAuth,async(req,res)=>{
     try{
         const user = req.user // append in req by userAuth
-        res.send(user)
+        const safeUser = await UserModel
+                                .findById(user._id)
+                                .select(USER_SAFE_DATA);
+        res.send(safeUser)
     }
     catch(err){
         res.status(500).send("Something Went Wrong: " + err.message)
@@ -24,9 +29,12 @@ profileRouter.patch('/edit',userAuth,async(req,res)=>{
         const user = req.user
         Object.keys(req.body).forEach((key)=>(user[key] = req.body[key]))
         await user.save()  // saving updated user
+        const safeUser = await UserModel
+                                .findById(user._id)
+                                .select(USER_SAFE_DATA);
         res.json({
             message : `${user.firstName}, your Profile updated successfuly...`,
-            result : user
+            result : safeUser
         })
     }
     catch(err){

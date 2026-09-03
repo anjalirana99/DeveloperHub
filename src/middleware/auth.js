@@ -7,7 +7,7 @@ const adminAuth = (req,res,next)=>{
     const token = "xyz"
     const isAdminAuthorized = token==="xyz"
     if(!isAdminAuthorized){
-        res.status(401).send("UnAuthorized Access Denied!")
+        return res.status(401).send("UnAuthorized Access Denied!")
     }
     else{
         next()
@@ -18,7 +18,9 @@ const userAuth = async(req,res,next)=>{
     try{
         const cookies = req.cookies
         const {accessToken} = req.cookies
-        if(!accessToken) throw new Error("Token is not Present!!!") 
+        if(!accessToken) 
+            return res.status(401).send("Unauthorized")
+
         const decodedData = await jwt.verify(accessToken,"SECRETKEY")
         const{_id} = decodedData
         const user = await UserModel.findById(_id)

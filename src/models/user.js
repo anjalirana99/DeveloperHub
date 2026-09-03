@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    photoUrl:{
+        type:String,
+        default : "https://img.favpng.com/10/24/2/computer-icons-user-icon-design-male-png-favpng-grqs7j1MENUsCah7VD6XBWVst.jpg"
+    },
     about:{
         type: String,
         default: "This is Default About"
