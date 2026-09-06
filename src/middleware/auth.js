@@ -20,8 +20,7 @@ const userAuth = async(req,res,next)=>{
         const {accessToken} = req.cookies
         if(!accessToken) 
             return res.status(401).send("Unauthorized")
-
-        const decodedData = await jwt.verify(accessToken,"SECRETKEY")
+        const decodedData = await jwt.verify(accessToken,process.env.JWT_SECRET_KEY)
         const{_id} = decodedData
         const user = await UserModel.findById(_id)
         if(!user) throw new Error("User Not Exist....")

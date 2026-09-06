@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.getJWT = function(){  //not arrow function as they dont have their this 
     const user = this
-    const token = jwt.sign({_id: user._id},"SECRETKEY",{expiresIn:"1d"})
+    const token = jwt.sign({_id: user._id},process.env.JWT_SECRET_KEY,{expiresIn:"1d"})
     return token
 }
 userSchema.methods.validatePassword = async function(userEnteredPassword){
