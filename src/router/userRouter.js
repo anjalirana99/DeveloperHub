@@ -13,12 +13,8 @@ userRouter.get("/request/received",userAuth, async(req,res)=>{
         const connectionRequest = await ConnectionRequestModel.find({
         toUserId: loggedInUser._id,
         status : "interested"
-        }).populate("fromUserId",["firstName","lastName"])
-        if(connectionRequest.length === 0){
-            res.status(404).send("No Connection Requests...")
-            
-        }
-
+        }).populate("fromUserId",USER_SAFE_DATA)
+        
         res.json({
             message: "Connection Requests Found for "+ loggedInUser.firstName,
             result : connectionRequest
@@ -39,19 +35,17 @@ userRouter.get("/connections",userAuth,async(req,res)=>{
                 {toUserId : loggedInUserID, status:"accepted"}
             ]
         })
-        .populate("fromUserId", ["firstName", "lastName"])
-        .populate("toUserId", ["firstName", "lastName"])
+        .populate("fromUserId", USER_SAFE_DATA)
+        .populate("toUserId", USER_SAFE_DATA)
 
-        if(connections.length === 0){
-            res.status(404).send("No connections Found")
-        }
+       
         const data = connections.map((row)=>{
-            if(row.fromUserId._id === loggedInUserID) return row.toUserId
+            if(row.fromUserId._id.toString() === loggedInUserID.toString()) return row.toUserId
             else return  row.fromUserId
         })
         res.json({
             message : "All connections for " + req.user.firstName,
-            data 
+            result :data 
         })
     }
     catch(err){

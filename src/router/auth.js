@@ -9,15 +9,27 @@ const { USER_SAFE_DATA } = require("../utils/constants");
 
 
 authRouter.post("/signup", async(req,res)=>{
-    const userInfo = req.body
+        const userInfo = { ...req.body };
         try{
         validateSignUp(userInfo)  // API level Data Sanitization and validation 
         const hashPassword = await bcrypt.hash(req.body?.password,10)  // password Encryption 
         userInfo.password = hashPassword
         const user = new UserModel(userInfo)
         await user.save()
-        res.send("User Stored")
+
+        const jwtToken = user?.getJWT()
+        res.cookie("accessToken",jwtToken,{expires : new Date(Date.now()+40*60 *1000)}) // cookie expires in 40min
+
+
+        const safeUser = await UserModel
+                                .findById(user._id)
+                                .select(USER_SAFE_DATA);
+        res.json({
+            message : "User Saved Successfully",
+            result : safeUser
+        })
         }
+        
         catch(err){
             res.status(500).send("Something Went Wrong: " + err.message)
         }
