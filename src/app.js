@@ -4,11 +4,12 @@ const {connectCluster} = require("./config/database")
 const app = express()
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
-
+const http = require('http')
 const { authRouter } = require("./router/auth")
 const { profileRouter } = require("./router/profile")
 const { requestRouter } = require("./router/requestRouter")
 const { userRouter } = require("./router/userRouter")
+const { initializeSocket } = require("./utils/socket")
 
 app.use(cors({
     origin : "http://localhost:5173",   //allow request from this origin 
@@ -22,11 +23,14 @@ app.use("/profile",profileRouter)  // will route all/profile path to profileRout
 app.use("/request",requestRouter)
 app.use("/user",userRouter)
 
+const server = http.createServer(app)
+initializeSocket(server)
+
 
 connectCluster()
 .then(()=>{
     console.log("DB Connected Succesfully!!!")   // first connect to DB then listen on server require is async but connectdb was async
-    app.listen(7777,()=>{
+    server.listen(7777,()=>{
     console.log("Server Started Succesfully at Port 7777.....")
 })
 })
