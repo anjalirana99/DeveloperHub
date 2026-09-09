@@ -10,6 +10,7 @@ const { profileRouter } = require("./router/profile")
 const { requestRouter } = require("./router/requestRouter")
 const { userRouter } = require("./router/userRouter")
 const { initializeSocket } = require("./utils/socket")
+const { chatRouter } = require("./router/chatRouter")
 
 app.use(cors({
     origin : "http://localhost:5173",   //allow request from this origin 
@@ -22,6 +23,7 @@ app.use("/",authRouter) // will route all paths to authRouter if match there ret
 app.use("/profile",profileRouter)  // will route all/profile path to profileRouter
 app.use("/request",requestRouter)
 app.use("/user",userRouter)
+app.use("/chat", chatRouter)
 
 const server = http.createServer(app)
 initializeSocket(server)

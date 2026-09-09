@@ -1,5 +1,6 @@
 const validate = require("validator")
 const { UserModel } = require("../models/user")
+const { ConnectionRequestModel } = require("../models/connectionRequest")
 
 const validateSignUp = (userInfo)=>{
     const  {firstName, lastName, email,password} = userInfo
@@ -34,4 +35,14 @@ const validateProfileUpdate = (req)=>{
     return isUpdateAllowed
 }
 
-module.exports = {validateSignUp, validateLogin, validateProfileUpdate}
+const validateBothareConnection = async(userId, targetId)=>{
+    const isConnectionExist = await ConnectionRequestModel.findOne({
+                $or:[
+                    {fromUserId : userId,toUserId : targetId , status : "accepted"},
+                    {fromUserId: targetId, toUserId: userId, status :"accepted"}
+                ]
+    })
+    return !!isConnectionExist
+}
+
+module.exports = {validateSignUp, validateLogin, validateProfileUpdate, validateBothareConnection}
